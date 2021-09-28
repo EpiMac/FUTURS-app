@@ -1,0 +1,6 @@
+package com.example.futurs
+
+import io.flutter.embedding.android.FlutterActivity
+
+class MainActivity: FlutterActivity() {
+}
