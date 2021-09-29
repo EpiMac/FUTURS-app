@@ -21,7 +21,7 @@ class Company {
           this.photo);
 }
 
-// TESTS (without API call)
+// TESTS (start)
 Company test1 = new Company(1,
                             "Microsoft",
                             "It's Microsoft bro",
@@ -34,7 +34,14 @@ Company test2 = new Company(2,
                             Icons.access_alarm,
                             "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT6P_xCU5PeM3YF4MPc2e5IbRCrPyeoj1iGYln1Zgaklvyi0jbXyozuTQ7oew78cCAkFzU&usqp=CAU");
 
-final companies = [test1, test2];
+Company test3 = new Company(3,
+                            "EpiMac",
+                            "The best company",
+                            Icons.computer,
+                            "https://media-exp1.licdn.com/dms/image/C560BAQE2K1RY08GxSA/company-logo_200_200/0/1562418791936?e=2159024400&v=beta&t=Eu2g_9IDiUIJzd9t7keq_jf3HmQ6GXbWKRx61ThZr2I");
+
+final companies = [test1, test2, test3];
+// TESTS (end)
 
 class Futurs_HomeRoute extends StatelessWidget {
   const Futurs_HomeRoute({Key? key}) : super(key: key);
