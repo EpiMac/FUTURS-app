@@ -1,31 +1,21 @@
 // FUTURS - Main file
 
-// ignore_for_file: camel_case_types
+// ignore_for_file: camel_case_types, prefer_const_constructors
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 //import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:advance_pdf_viewer/advance_pdf_viewer.dart';
-import 'package:webview_flutter/webview_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 import 'companies.dart';
 import 'misc.dart';
-
-// Test
-Companies test = Companies(
-  companyName: "EpiMac",
-  companyDescription: "Partagez votre passion.",
-  companyContact: "contact@epimac.org",
-  companyID: "FUTURS42",
-  companyCategory: "tech",
-  companyPhotoUrl: "https://media-exp1.licdn.com/dms/image/C560BAQE2K1RY08GxSA/company-logo_200_200/0/1562418791936?e=2159024400&v=beta&t=Eu2g_9IDiUIJzd9t7keq_jf3HmQ6GXbWKRx61ThZr2I"
-);
+import 'qrcode.dart';
 
 // URLs
 const String api_url = "https://api.npoint.io/e86cf7afdde9b4af50cb";
-const String map_url = "https://www.escaux.com/rsrc/EscauxCustomerDocs/DRD_T38Support_AdminGuide/T38_TEST_PAGES.pdf";
+const String map_url = "https://www.epimac.org/futurs/map.pdf";
 
 // Settings
 Color topColor = const Color.fromRGBO(177, 0, 105, 1.0);
@@ -78,12 +68,13 @@ class Futurs_HomeRoute extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: backgroundColor,
       appBar: AppBar(
         title: Image.asset('assets/logo_futurs_text.png', height: 20, fit: BoxFit.cover),
         backgroundColor: topColor
       ),
       body: SingleChildScrollView(
-        child: Center(
+        child: Container(margin: const EdgeInsets.only(left: 20.0, right: 20.0), child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -111,18 +102,18 @@ class Futurs_HomeRoute extends StatelessWidget {
               ),
               const SizedBox(height: 23),
               ElevatedButton(
-                child: const Text('Scannez une entreprise'),
+                child: const Text('Scannez un exposant'),
                 style: ElevatedButton.styleFrom(primary: topColor),
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => Futurs_DetailRoute(company: test)),
-                  );
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const QRViewCompanies(),
+                  ));
                 },
               )
             ],
           )
         ),
+      )
       )
     );
   }
@@ -136,10 +127,11 @@ class Futurs_CompaniesRoute extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
         home: Scaffold(
-            appBar: AppBar(
-              title: const Text("Exposants"),
-              backgroundColor: topColor
-            ),
+          backgroundColor: backgroundColor,
+          appBar: AppBar(
+            title: const Text("Exposants"),
+            backgroundColor: topColor
+          ),
         body: FutureBuilder<List<Companies>>(
         future: fetchCompanies(http.Client()),
         builder: (context, snapshot) {
@@ -170,6 +162,7 @@ class CompaniesList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      margin: const EdgeInsets.only(left: 10.0, right: 10.0, top: 25.0),
       color: backgroundColor,
       child: ListView.builder(
         itemCount: companies.length,
@@ -177,7 +170,7 @@ class CompaniesList extends StatelessWidget {
           return Card(
               child: ListTile(
                 title: Text(companies[index].companyName),
-                subtitle: Text(companies[index].companyDescription),
+                subtitle: Text("#" + companies[index].companyCategory),
                 leading: CircleAvatar(
                   backgroundImage: NetworkImage(
                     companies[index].companyPhotoUrl)),
@@ -244,6 +237,7 @@ class _Futurs_MapRoute_State extends State<Futurs_MapRoute> {
   }
 }
 
+// Company Detail Route
 class Futurs_DetailRoute extends StatelessWidget {
   const Futurs_DetailRoute({Key? key, required this.company}) : super(key: key);
 
@@ -252,31 +246,51 @@ class Futurs_DetailRoute extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: backgroundColor,
       appBar: AppBar(
         title: Text(company.companyName),
         backgroundColor: topColor
       ),
-      body: Container(
-        color: backgroundColor,
-        child: Center(
-          child: Column(
-            children: [
-              Align(
-                alignment: Alignment.center,
-                child: Text.rich(
-                  TextSpan(
-                    text: company.companyName + " / ",
-                    style: TextStyle(fontSize: 24, color: Colors.white),
-                    children: <TextSpan>[
-                      TextSpan(text: company.companyDescription, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
-                    ],
+      body: SingleChildScrollView(
+        child: Container(
+          color: backgroundColor,
+          margin: const EdgeInsets.only(left: 25.0, right: 25.0),
+          child: Center(
+            child: Column(
+              children: [
+                const SizedBox(height: 25),
+                Container(
+                  width: 120,
+                  height: 120,
+                  decoration: BoxDecoration(
+	                  shape: BoxShape.circle,
+	                  image: DecorationImage(
+	                    image: NetworkImage(company.companyPhotoUrl),
+	                    fit: BoxFit.fill
+	                  ),
                   ),
-                  textAlign: TextAlign.center,
-                )
-              )
-            ],
-          )
-        ),
+                ),
+                const SizedBox(height: 20),
+                Text.rich(
+                    TextSpan(
+                      text: company.companyDescription,
+                      style: TextStyle(fontSize: 17, color: Colors.white),
+                    ),
+                  ),
+                const SizedBox(height: 40),
+                Card(
+                  child: ListTile(
+                    leading: Icon(Icons.contact_mail),
+                    tileColor:Colors.white,
+                    title: Text('Responsable(s) à contacter'),
+                    subtitle: Text(company.companyContact),
+                  )
+                ),
+                const SizedBox(height: 25),
+              ],
+            )
+          ),
+        )
       )
     );
   }
@@ -323,64 +337,3 @@ class _NavigationState extends State<Navigation> {
     );
   }
 }
-
-/*
-class _QRViewExampleState {
-  final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
-  late Barcode result;
-  late QRViewController controller;
-
-  // In order to get hot reload to work we need to pause the camera if the platform
-  // is android, or resume the camera if the platform is iOS.
-  @override
-  void reassemble() {
-    //super.reassemble();
-    if (Platform.isAndroid) {
-      controller.pauseCamera();
-    } else if (Platform.isIOS) {
-      controller.resumeCamera();
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        children: <Widget>[
-          Expanded(
-            flex: 5,
-            child: QRView(
-              key: qrKey,
-              onQRViewCreated: _onQRViewCreated,
-            ),
-          ),
-          Expanded(
-            flex: 1,
-            child: Center(
-              child: (result != null)
-                  ? Text(
-                      'Barcode Type: ${describeEnum(result.format)}   Data: ${result.code}')
-                  : Text('Scan a code'),
-            ),
-          )
-        ],
-      ),
-    );
-  }
-
-  void _onQRViewCreated(QRViewController controller) {
-    this.controller = controller;
-    controller.scannedDataStream.listen((scanData) {
-      setState(() {
-        result = scanData;
-      });
-    });
-  }
-
-  @override
-  void dispose() {
-    controller?.dispose();
-    super.dispose();
-  }
-}
-*/
