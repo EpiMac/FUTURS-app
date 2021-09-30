@@ -12,6 +12,16 @@ import 'package:http/http.dart' as http;
 import 'companies.dart';
 import 'misc.dart';
 
+// Test
+Companies test = Companies(
+  companyName: "EpiMac",
+  companyDescription: "Partagez votre passion.",
+  companyContact: "contact@epimac.org",
+  companyID: "FUTURS42",
+  companyCategory: "tech",
+  companyPhotoUrl: "https://media-exp1.licdn.com/dms/image/C560BAQE2K1RY08GxSA/company-logo_200_200/0/1562418791936?e=2159024400&v=beta&t=Eu2g_9IDiUIJzd9t7keq_jf3HmQ6GXbWKRx61ThZr2I"
+);
+
 // URLs
 const String api_url = "https://api.npoint.io/e86cf7afdde9b4af50cb";
 const String map_url = "https://www.escaux.com/rsrc/EscauxCustomerDocs/DRD_T38Support_AdminGuide/T38_TEST_PAGES.pdf";
@@ -80,11 +90,11 @@ class Futurs_HomeRoute extends StatelessWidget {
               )
             ),
             ElevatedButton(
-              child: const Text('Scannez une entreprise'),
+              child: const Text('Lancer le test'),
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const Futurs_CompaniesRoute()),
+                  MaterialPageRoute(builder: (context) => Futurs_DetailRoute(company: test)),
                 );
               },
             )
@@ -137,20 +147,29 @@ class CompaniesList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: companies.length,
-      itemBuilder: (context, index) {
-        return Card(
-            child: ListTile(
-              title: Text(companies[index].companyName),
-              subtitle: Text(companies[index].companyDescription),
-              leading: CircleAvatar(
-                backgroundImage: NetworkImage(
-                  companies[index].companyPhotoUrl)),
-              trailing: getIcon(companies[index].companyCategory)
-            )
-        );
-      }
+    return Container(
+      color: backgroundColor,
+      child: ListView.builder(
+        itemCount: companies.length,
+        itemBuilder: (context, index) {
+          return Card(
+              child: ListTile(
+                title: Text(companies[index].companyName),
+                subtitle: Text(companies[index].companyDescription),
+                leading: CircleAvatar(
+                  backgroundImage: NetworkImage(
+                    companies[index].companyPhotoUrl)),
+                trailing: getIcon(companies[index].companyCategory),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => Futurs_DetailRoute(company: companies[index])),
+                  );
+                },
+              )
+          );
+        }
+      )
     );
   }
 }
@@ -200,6 +219,44 @@ class _Futurs_MapRoute_State extends State<Futurs_MapRoute> {
                         document: document,
                         zoomSteps: 1,
                       ))));
+  }
+}
+
+class Futurs_DetailRoute extends StatelessWidget {
+  const Futurs_DetailRoute({Key? key, required this.company}) : super(key: key);
+
+  final Companies company;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(company.companyName),
+        backgroundColor: topColor
+      ),
+      body: Container(
+        color: backgroundColor,
+        child: Center(
+          child: Column(
+            children: [
+              Align(
+                alignment: Alignment.center,
+                child: Text.rich(
+                  TextSpan(
+                    text: company.companyName + " / ",
+                    style: TextStyle(fontSize: 24, color: Colors.white),
+                    children: <TextSpan>[
+                      TextSpan(text: company.companyDescription, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
+                    ],
+                  ),
+                  textAlign: TextAlign.center,
+                )
+              )
+            ],
+          )
+        ),
+      )
+    );
   }
 }
 
