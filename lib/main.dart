@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:advance_pdf_viewer/advance_pdf_viewer.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:http/http.dart' as http;
+import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 import 'companies.dart';
 import 'misc.dart';
 
@@ -45,6 +46,16 @@ Future<List<Companies>> fetchCompanies(http.Client client) async {
    } 
 }
 
+// YouTube iFrame Controller
+YoutubePlayerController _controller = YoutubePlayerController(
+    initialVideoId: 'E8ulwzAs-wo',
+    params: const YoutubePlayerParams(
+        startAt: Duration(seconds: 0),
+        showControls: true,
+        showFullscreenButton: true,
+    ),
+);
+
 // Main
 void main() {
   runApp(
@@ -68,40 +79,51 @@ class Futurs_HomeRoute extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("FUTURS"),//Image.asset('assets/logo_futurs.png', fit: BoxFit.cover),
+        title: Image.asset('assets/logo_futurs_text.png', height: 20, fit: BoxFit.cover),
         backgroundColor: topColor
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            const Align(
-              alignment: Alignment.center,
-              child: Text.rich(
-                TextSpan(
-                  text: "Une journée type dans le futur, ",
-                  style: TextStyle(fontSize: 24, color: Colors.white),
-                  children: <TextSpan>[
-                    TextSpan(text: 'pour les jeunes', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
-                    TextSpan(text: '.', style: TextStyle(color: Colors.white)),
-                  ],
+      body: SingleChildScrollView(
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              const SizedBox(height: 25),
+              const Image(
+                image: AssetImage('assets/logo_futurs_full.png'),
+                height: 100,
+              ),
+              const SizedBox(height: 15),
+              const Text.rich(
+                  TextSpan(
+                    text: "Une journée type dans le futur, ",
+                    style: TextStyle(fontSize: 24, color: Colors.white),
+                    children: <TextSpan>[
+                      TextSpan(text: 'pour les jeunes', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
+                      TextSpan(text: '.', style: TextStyle(color: Colors.white)),
+                    ],
+                  ),
+                  textAlign: TextAlign.center,
                 ),
-                textAlign: TextAlign.center,
+              const SizedBox(height: 35),
+              YoutubePlayerIFrame(
+                controller: _controller,
+                aspectRatio: 16 / 9,
+              ),
+              const SizedBox(height: 23),
+              ElevatedButton(
+                child: const Text('Scannez une entreprise'),
+                style: ElevatedButton.styleFrom(primary: topColor),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => Futurs_DetailRoute(company: test)),
+                  );
+                },
               )
-            ),
-            ElevatedButton(
-              child: const Text('Lancer le test'),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Futurs_DetailRoute(company: test)),
-                );
-              },
-            )
-          ],
-        )
-      ),
-      
+            ],
+          )
+        ),
+      )
     );
   }
 }
