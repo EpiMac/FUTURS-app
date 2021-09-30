@@ -37,6 +37,7 @@ dependencies:
   qr_code_scanner: any
   advance_pdf_viewer: any
   pdf_viewer_jk: ^2.1.4
+  webview_flutter: ^2.1.1
 
 dev_dependencies:
   flutter_test:

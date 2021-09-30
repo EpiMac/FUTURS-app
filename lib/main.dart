@@ -1,14 +1,41 @@
-// ignore_for_file: camel_case_types
+// FUTURS - Main file
 
+// ignore_for_file: camel_case_types
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 //import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:advance_pdf_viewer/advance_pdf_viewer.dart';
+import 'package:webview_flutter/webview_flutter.dart';
+import 'package:http/http.dart' as http;
+import 'companies.dart';
+import 'misc.dart';
 
+// URLs
+const String api_url = "https://api.npoint.io/e86cf7afdde9b4af50cb";
+const String map_url = "https://www.escaux.com/rsrc/EscauxCustomerDocs/DRD_T38Support_AdminGuide/T38_TEST_PAGES.pdf";
+
+// Settings
 Color topColor = const Color.fromRGBO(177, 0, 105, 1.0);
 Color backgroundColor = const Color.fromRGBO(0, 6, 43, 1.0);
 
+// API Calls
+List<Companies> parseCompanies(String responseBody) {
+  final parsed = jsonDecode(responseBody).cast<Map<String,dynamic>>();
+  return parsed.map<Companies>((json) => Companies.fromJson(json)).toList();
+}
+
+Future<List<Companies>> fetchCompanies(http.Client client) async {
+  final response = await client.get(Uri.parse(api_url));
+  if (response.statusCode == 200) { 
+      return parseCompanies(response.body); 
+   } else { 
+      throw Exception('Unable to fetch companies from the REST API');
+   } 
+}
+
+// Main
 void main() {
   runApp(
     MaterialApp(
@@ -23,45 +50,7 @@ void main() {
 }
 
 // ignore: constant_identifier_names
-const String map_url = "https://www.escaux.com/rsrc/EscauxCustomerDocs/DRD_T38Support_AdminGuide/T38_TEST_PAGES.pdf";
-const Color darkBackground = Color(0xFF2D2D2D);
-
-class Company {
-  int id;
-  String name;
-  String description;
-  IconData icon;
-  String photo;
-
-  Company(this.id,
-          this.name,
-          this.description,
-          this.icon,
-          this.photo);
-}
-
-// TESTS (start)
-Company test1 = Company(1,
-                        "Microsoft",
-                        "It's Microsoft bro",
-                        Icons.ac_unit,
-                        "https://pbs.twimg.com/profile_images/1234407307955535873/0pjqJnab_400x400.png");
-
-Company test2 = Company(2,
-                        "Ubisoft",
-                        "Assassin's Creed for Life",
-                        Icons.access_alarm,
-                        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT6P_xCU5PeM3YF4MPc2e5IbRCrPyeoj1iGYln1Zgaklvyi0jbXyozuTQ7oew78cCAkFzU&usqp=CAU");
-
-Company test3 = Company(3,
-                        "EpiMac",
-                        "The best company",
-                        Icons.computer,
-                        "https://media-exp1.licdn.com/dms/image/C560BAQE2K1RY08GxSA/company-logo_200_200/0/1562418791936?e=2159024400&v=beta&t=Eu2g_9IDiUIJzd9t7keq_jf3HmQ6GXbWKRx61ThZr2I");
-
-final companies = [test1, test2, test3];
-// TESTS (end)
-
+// Home Activity
 class Futurs_HomeRoute extends StatelessWidget {
   const Futurs_HomeRoute({Key? key}) : super(key: key);
 
@@ -73,40 +62,100 @@ class Futurs_HomeRoute extends StatelessWidget {
         backgroundColor: topColor
       ),
       body: Center(
-        child: ElevatedButton(
-          child: const Text('Scannez une entreprise'),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const Futurs_CompaniesRoute()),
-            );
-          },
-        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            const Align(
+              alignment: Alignment.center,
+              child: Text.rich(
+                TextSpan(
+                  text: "Une journée type dans le futur, ",
+                  style: TextStyle(fontSize: 24, color: Colors.white),
+                  children: <TextSpan>[
+                    TextSpan(text: 'pour les jeunes', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
+                    TextSpan(text: '.', style: TextStyle(color: Colors.white)),
+                  ],
+                ),
+                textAlign: TextAlign.center,
+              )
+            ),
+            ElevatedButton(
+              child: const Text('Scannez une entreprise'),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const Futurs_CompaniesRoute()),
+                );
+              },
+            )
+          ],
+        )
       ),
+      
     );
   }
 }
 
+// Companies Activity
 class Futurs_CompaniesRoute extends StatelessWidget {
   const Futurs_CompaniesRoute({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-        itemCount: companies.length,
-        itemBuilder: (context, index) {
-          return Card(
-              child: ListTile(
-                  title: Text(companies[index].name),
-                  subtitle: Text(companies[index].description),
-                  leading: CircleAvatar(
-                      backgroundImage: NetworkImage(
-                          companies[index].photo)),
-                  trailing: Icon(companies[index].icon)));
-        });
+    return MaterialApp(
+        home: Scaffold(
+            appBar: AppBar(
+              title: const Text("Exposants"),
+              backgroundColor: topColor
+            ),
+        body: FutureBuilder<List<Companies>>(
+        future: fetchCompanies(http.Client()),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return const Center(
+              child: Text("Une erreur s'est produite"),
+            );
+          } else if (snapshot.hasData) {
+            return CompaniesList(companies: snapshot.data!);
+          } else {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+        },
+      )
+      )
+    );
   }
 }
 
+// Companies ListView
+class CompaniesList extends StatelessWidget {
+  const CompaniesList({Key? key, required this.companies}) : super(key: key);
+
+  final List<Companies> companies;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      itemCount: companies.length,
+      itemBuilder: (context, index) {
+        return Card(
+            child: ListTile(
+              title: Text(companies[index].companyName),
+              subtitle: Text(companies[index].companyDescription),
+              leading: CircleAvatar(
+                backgroundImage: NetworkImage(
+                  companies[index].companyPhotoUrl)),
+              trailing: getIcon(companies[index].companyCategory)
+            )
+        );
+      }
+    );
+  }
+}
+
+// Map Activity
 class Futurs_MapRoute extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _Futurs_MapRoute_State();
@@ -154,23 +203,7 @@ class _Futurs_MapRoute_State extends State<Futurs_MapRoute> {
   }
 }
 
-/*
-class Futurs_MapRoute extends StatelessWidget {
-  const Futurs_MapRoute({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Plan du salon'),
-      ),
-      body: Center(
-          child: PDFViewer(document: map_document)),
-    );
-  }
-}
-*/
-
+// Bottom navigation bar
 class Navigation extends StatefulWidget {
   const Navigation({Key? key}) : super(key: key);
 
@@ -197,7 +230,7 @@ class _NavigationState extends State<Navigation> {
       backgroundColor: Theme.of(context).backgroundColor,
       body: IndexedStack(index: _selectedIndex, children: _widgetOptions),
       bottomNavigationBar: BottomNavigationBar(
-        items: [
+        items: const [
           BottomNavigationBarItem(
               icon: Icon(Icons.home), label: 'Accueil'),
           BottomNavigationBarItem(
