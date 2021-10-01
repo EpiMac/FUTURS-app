@@ -12,19 +12,11 @@ PODS:
   - FMDB (2.7.5):
     - FMDB/standard (= 2.7.5)
   - FMDB/standard (2.7.5)
-  - image_gallery_saver (1.5.0):
-    - Flutter
-  - majascan (0.0.5):
-    - Flutter
-  - MTBBarcodeScanner (5.0.11)
   - OrderedSet (5.0.0)
   - path_provider (0.0.1):
     - Flutter
   - pdf_viewer_jk (1.0.5):
     - Flutter
-  - qr_code_scanner (0.2.0):
-    - Flutter
-    - MTBBarcodeScanner
   - sqflite (0.0.2):
     - Flutter
     - FMDB (>= 2.7.5)
@@ -37,11 +29,8 @@ DEPENDENCIES:
   - advance_pdf_viewer (from `.symlinks/plugins/advance_pdf_viewer/ios`)
   - Flutter (from `Flutter`)
   - flutter_inappwebview (from `.symlinks/plugins/flutter_inappwebview/ios`)
-  - image_gallery_saver (from `.symlinks/plugins/image_gallery_saver/ios`)
-  - majascan (from `.symlinks/plugins/majascan/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
   - pdf_viewer_jk (from `.symlinks/plugins/pdf_viewer_jk/ios`)
-  - qr_code_scanner (from `.symlinks/plugins/qr_code_scanner/ios`)
   - sqflite (from `.symlinks/plugins/sqflite/ios`)
   - url_launcher (from `.symlinks/plugins/url_launcher/ios`)
   - webview_flutter_wkwebview (from `.symlinks/plugins/webview_flutter_wkwebview/ios`)
@@ -49,7 +38,6 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - FMDB
-    - MTBBarcodeScanner
     - OrderedSet
 
 EXTERNAL SOURCES:
@@ -59,16 +47,10 @@ EXTERNAL SOURCES:
     :path: Flutter
   flutter_inappwebview:
     :path: ".symlinks/plugins/flutter_inappwebview/ios"
-  image_gallery_saver:
-    :path: ".symlinks/plugins/image_gallery_saver/ios"
-  majascan:
-    :path: ".symlinks/plugins/majascan/ios"
   path_provider:
     :path: ".symlinks/plugins/path_provider/ios"
   pdf_viewer_jk:
     :path: ".symlinks/plugins/pdf_viewer_jk/ios"
-  qr_code_scanner:
-    :path: ".symlinks/plugins/qr_code_scanner/ios"
   sqflite:
     :path: ".symlinks/plugins/sqflite/ios"
   url_launcher:
@@ -81,13 +63,9 @@ SPEC CHECKSUMS:
   Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
   flutter_inappwebview: bfd58618f49dc62f2676de690fc6dcda1d6c3721
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
-  image_gallery_saver: 259eab68fb271cfd57d599904f7acdc7832e7ef2
-  majascan: 473bd426fa19600b6ca287bc948d40b2194d5c0b
-  MTBBarcodeScanner: f453b33c4b7dfe545d8c6484ed744d55671788cb
   OrderedSet: aaeb196f7fef5a9edf55d89760da9176ad40b93c
   path_provider: d1e9807085df1f9cc9318206cd649dc0b76be3de
   pdf_viewer_jk: a2ed0b48c5df268b28fc4224d7b80150020c6b78
-  qr_code_scanner: bb67d64904c3b9658ada8c402e8b4d406d5d796e
   sqflite: 6d358c025f5b867b29ed92fc697fd34924e11904
   url_launcher: b6e016d912f04be9f5bf6e8e82dc599b7ba59649
   webview_flutter_wkwebview: 44aa025fbcf6730d808f1e0d86a5af5ac25fa8de

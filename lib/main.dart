@@ -2,9 +2,6 @@
 
 // ignore_for_file: camel_case_types, prefer_const_constructors
 import 'dart:convert';
-import 'dart:typed_data';
-import 'dart:io';
-import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:advance_pdf_viewer/advance_pdf_viewer.dart';
@@ -12,8 +9,6 @@ import 'package:http/http.dart' as http;
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 import 'companies.dart';
 import 'misc.dart';
-import 'package:image_gallery_saver/image_gallery_saver.dart';
-//import 'qrcode.dart';
 
 // URLs
 const String api_url = "https://api.npoint.io/e86cf7afdde9b4af50cb";

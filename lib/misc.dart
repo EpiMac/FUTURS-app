@@ -1,8 +1,5 @@
 // FUTURS - Miscellaneous functions
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
-import 'package:dio/dio.dart';
-import 'package:image_gallery_saver/image_gallery_saver.dart';
 
 // Set an icon regarding the category
 Icon getIcon(category) {
