@@ -2,16 +2,18 @@
 
 // ignore_for_file: camel_case_types, prefer_const_constructors
 import 'dart:convert';
+import 'dart:typed_data';
 import 'dart:io';
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-//import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:advance_pdf_viewer/advance_pdf_viewer.dart';
 import 'package:http/http.dart' as http;
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 import 'companies.dart';
 import 'misc.dart';
-import 'qrcode.dart';
+import 'package:image_gallery_saver/image_gallery_saver.dart';
+//import 'qrcode.dart';
 
 // URLs
 const String api_url = "https://api.npoint.io/e86cf7afdde9b4af50cb";
@@ -36,16 +38,6 @@ Future<List<Companies>> fetchCompanies(http.Client client) async {
    } 
 }
 
-// YouTube iFrame Controller
-YoutubePlayerController _controller = YoutubePlayerController(
-    initialVideoId: '5-5Q7HAojWQ',
-    params: const YoutubePlayerParams(
-        startAt: Duration(seconds: 0),
-        showControls: true,
-        showFullscreenButton: true,
-    ),
-);
-
 // Main
 void main() {
   runApp(
@@ -56,6 +48,7 @@ void main() {
         scaffoldBackgroundColor: backgroundColor 
       ),
       home: const Navigation(),
+      debugShowCheckedModeBanner: false,
     )
   );
 }
@@ -64,7 +57,7 @@ void main() {
 // Home Activity
 class Futurs_HomeRoute extends StatelessWidget {
   const Futurs_HomeRoute({Key? key}) : super(key: key);
-
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -95,21 +88,42 @@ class Futurs_HomeRoute extends StatelessWidget {
                   ),
                   textAlign: TextAlign.center,
                 ),
-              const SizedBox(height: 35),
+                const SizedBox(height: 35),
+                const Text.rich(
+                  TextSpan(
+                    text: "Quelques vidéos sur l'évènement :",
+                    style: TextStyle(fontSize: 15, color: Colors.white),
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              const SizedBox(height: 10),
               YoutubePlayerIFrame(
-                controller: _controller,
+                controller: _video1,
+                aspectRatio: 16 / 9,
+              ),
+              const SizedBox(height: 20),
+              YoutubePlayerIFrame(
+                controller: _video2,
+                aspectRatio: 16 / 9,
+              ),
+              const SizedBox(height: 20),
+              YoutubePlayerIFrame(
+                controller: _video3,
                 aspectRatio: 16 / 9,
               ),
               const SizedBox(height: 23),
+              /*
               ElevatedButton(
-                child: const Text('Scannez un exposant'),
+                child: const Text('Partagez votre présence'),
                 style: ElevatedButton.styleFrom(primary: topColor),
                 onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => const QRViewCompanies(),
-                  ));
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => _getHttp()),
+                  );
                 },
               )
+            */
             ],
           )
         ),
@@ -337,3 +351,31 @@ class _NavigationState extends State<Navigation> {
     );
   }
 }
+
+// YouTube iFrame Controllers
+YoutubePlayerController _video1 = YoutubePlayerController(
+    initialVideoId: '5-5Q7HAojWQ',
+    params: const YoutubePlayerParams(
+        startAt: Duration(seconds: 0),
+        showControls: true,
+        showFullscreenButton: true,
+    ),
+);
+
+YoutubePlayerController _video2 = YoutubePlayerController(
+    initialVideoId: '8vPILjv0c8Y',
+    params: const YoutubePlayerParams(
+        startAt: Duration(seconds: 0),
+        showControls: true,
+        showFullscreenButton: true,
+    ),
+);
+
+YoutubePlayerController _video3 = YoutubePlayerController(
+    initialVideoId: 'E8ulwzAs-wo',
+    params: const YoutubePlayerParams(
+        startAt: Duration(seconds: 0),
+        showControls: true,
+        showFullscreenButton: true,
+    ),
+);

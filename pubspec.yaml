@@ -39,6 +39,9 @@ dependencies:
   pdf_viewer_jk: ^2.1.4
   webview_flutter: ^2.1.1
   youtube_player_iframe: ^2.2.2
+  majascan: ^0.4.0
+  image_gallery_saver: ^1.7.0
+  dio: ^4.0.0
 
 dev_dependencies:
   flutter_test:
